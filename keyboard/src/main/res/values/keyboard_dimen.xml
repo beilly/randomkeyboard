@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="keyboard_height">50.0dip</dimen>
+    <dimen name="keyboard_num_height">50.0dip</dimen>
+    <dimen name="keyboard_crimp">200.0dip</dimen>
+    <dimen name="keyboard_key_text_size">18sp</dimen>
+    <dimen name="keyboard_key_num_horizontalgap">6.0dip</dimen>
+    <dimen name="keyboard_key_num_verticalGap">6.0dip</dimen>
+    <dimen name="keyboard_key_char_horizontalgap">4.0dip</dimen>
+    <dimen name="keyboard_key_char_verticalGap">4.0dip</dimen>
+    <dimen name="keyboard_content_margin_top">7.0dip</dimen>
+    <dimen name="keyboard_content_margin_left">7.0dip</dimen>
+    <dimen name="keyboard_xdja_text_padding">5.0dip</dimen>
+    <dimen name="keyboard_xdja_text_size">16sp</dimen>
+</resources>

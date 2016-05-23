@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@id/keyboard_view_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:paddingTop="1.5dp"
+        android:background="@color/keyboard_backgroud"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@android:color/transparent"
+            android:clickable="false"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="@string/keyboard_title_text"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:padding="@dimen/keyboard_xdja_text_padding"
+            android:textColor="@color/keyboard_xdja_text_color"
+            android:textSize="@dimen/keyboard_xdja_text_size"
+            android:visibility="gone" />
+
+        <android.inputmethodservice.KeyboardView
+            android:id="@id/keyboard_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:shadowColor="@color/keyboard_shadow_color"
+            android:shadowRadius="0.0"
+            android:keyTextSize="@dimen/keyboard_key_text_size"
+            android:keyBackground="@drawable/keyboard_key_btn_selector"
+            android:keyTextColor="@color/bg_orange_ff7e2a" />
+
+
+</LinearLayout>

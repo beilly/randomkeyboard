@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <item type="id" name="keyboard_view"></item>
+   <item type="id" name="keyboard_view_layout"></item>
+    <item type="id" name="keyboard_view_crimp"></item>
+   <item type="id" name="actionbar"></item>
+</resources>
