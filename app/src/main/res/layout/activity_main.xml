@@ -29,4 +29,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/edittext1"
         android:text="1234581" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edittext2"
+        android:text="@string/common_sure"
+        android:onClick="onClick"/>
 </RelativeLayout>

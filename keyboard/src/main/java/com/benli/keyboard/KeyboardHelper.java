@@ -2,6 +2,7 @@ package com.benli.keyboard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
@@ -11,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -241,7 +243,11 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 			randomdigkey();
 
 		if (editText.getWindowToken() != null) {
-			keyboardWindow.showAtLocation(editText.getRootView(), Gravity.BOTTOM, 0, 0);
+			Resources resources = editText.getContext().getApplicationContext().getResources();
+			DisplayMetrics dm = resources.getDisplayMetrics();
+			int width3 = dm.widthPixels;
+			int height3 = dm.heightPixels;
+			keyboardWindow.showAtLocation(editText.getRootView(), Gravity.BOTTOM, 0, -height3);
 		}
 	}
 
@@ -313,10 +319,15 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 		View contentView = LayoutInflater.from(context).inflate(
 				R.layout.keyboard_layout, null);
 
-		PopupWindow popupWindow = new PopupWindow(contentView,
-				ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+		Resources resources = context.getApplicationContext().getResources();
+		DisplayMetrics dm = resources.getDisplayMetrics();
+		int width3 = dm.widthPixels;
+		int height3 = dm.heightPixels;
 
-//		popupWindow.setTouchable(true);
+		PopupWindow popupWindow = new PopupWindow(contentView,
+				height3, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+
+		popupWindow.setTouchable(true);
 //
 //		popupWindow.setTouchInterceptor(new View.OnTouchListener() {
 //

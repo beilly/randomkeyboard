@@ -3,4 +3,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="dark_gray">#666</color>
+    <color name="bg_blue_2181f7">#2181f7</color>
+    <color name="bg_black_acacac">#acacac</color>
+    <color name="font_gray_66">@color/dark_gray</color>
+    <color name="font_hint_gray">#ccc</color>
+    <color name="font_white">#fff</color>
+    <color name="gray_80t">#cccccccc</color>
+    <color name="bg_white">#ffffff</color>
+    <color name="bg_yellow_ffc517">#ffc517</color>
+    <color name="bg_yellow_ffce3a">#ffce3a</color>
 </resources>

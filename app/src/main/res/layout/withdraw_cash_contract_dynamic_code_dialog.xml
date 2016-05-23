@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/shape_corner4_white_normal">
+
+
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:text="请输入你收到的验证码"
+        android:textColor="@color/dark_gray"
+        android:textSize="@dimen/fontSize_14" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/shape_border_corner4_gray">
+
+        <Button
+            android:id="@+id/btn_withdraw_cash_dynamic_getCode"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="3dp"
+            android:background="@drawable/selecter_corner4_yellow_gray"
+            android:gravity="center"
+            android:text="发送"
+            android:textColor="@color/font_white"
+            android:textSize="@dimen/fontSize_12" />
+
+        <EditText
+            android:id="@+id/edt_withdraw_cash_dynamic_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@+id/btn_withdraw_cash_dynamic_getCode"
+            android:background="@color/transparent"
+            android:hint="请输入短信验证码"
+            android:singleLine="true"
+            android:textColor="@color/font_gray_66"
+            android:textColorHint="@color/font_hint_gray"
+            android:textSize="@dimen/fontSize_12" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/bg_black_acacac" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_withdraw_cash_dynamic_dialog_cancle"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/common_cancle"
+            android:textColor="@color/bg_blue_2181f7"
+            android:textSize="@dimen/fontSize_16" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/bg_black_acacac" />
+
+        <TextView
+            android:id="@+id/tv_withdraw_cash_dynamic_dialog_sure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/common_sure"
+            android:textColor="@color/bg_blue_2181f7"
+            android:textSize="@dimen/fontSize_16" />
+    </LinearLayout>
+</LinearLayout>
