@@ -2,6 +2,9 @@ package com.benli.randomkeyboard;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.EditText;
+
+import com.benli.keyboard.KeyboardHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -9,5 +12,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        new KeyboardHelper(this, (EditText) findViewById(R.id.edittext1));
     }
 }
