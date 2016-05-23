@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new KeyboardHelper(this, (EditText) findViewById(R.id.edittext1));
+        new KeyboardHelper(this).addEditText((EditText) findViewById(R.id.edittext1)).setShouldRandom(true);
+        new KeyboardHelper(this).addEditText((EditText) findViewById(R.id.edittext2)).setShouldRandom(true);
     }
 }

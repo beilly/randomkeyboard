@@ -20,5 +20,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textview"
-        android:text="Hello World!" />
+        android:inputType="numberPassword"
+        android:hint="Hello World!" />
+
+    <EditText
+        android:id="@+id/edittext2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edittext1"
+        android:text="1234581" />
 </RelativeLayout>

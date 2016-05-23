@@ -31,15 +31,19 @@ import java.util.Random;
  */
 public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeListener{
 	private final static int TAG_ET = R.id.keyboard_view;
+	private static PopupWindow keyboardWindow;
 
 	private View keyboardLayout;
 	private KeyboardView keyboardView;
 	private Keyboard keyDig;// 数字键盘
-	private PopupWindow keyboardWindow;
+
+	public KeyboardHelper(Activity mActivity) {
+		this(mActivity, null);
+	}
 
 	public KeyboardHelper(Activity mActivity, EditText editText) {
-		keyDig = new Keyboard(mActivity, R.xml.keyboard_symbols);
-		keyboardWindow = createKeyboardWindow(mActivity);
+		keyDig = new Keyboard(mActivity.getApplicationContext(), R.xml.keyboard_symbols);
+		keyboardWindow = createKeyboardWindow(mActivity.getApplicationContext());
 		keyboardView = (KeyboardView) keyboardWindow.getContentView().findViewById(R.id.keyboard_view);
 		keyboardLayout = keyboardWindow.getContentView().findViewById(R.id.keyboard_view_layout);
 //		keyboardLayout = mActivity.findViewById(R.id.keyboard_view_layout);
@@ -48,6 +52,13 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 		keyboardView.setEnabled(true);
 		keyboardView.setPreviewEnabled(false);
 		keyboardView.setOnKeyboardActionListener(listener);
+		addEditText(editText);
+	}
+
+	public KeyboardHelper addEditText(EditText editText){
+		if (editText == null)
+			return this;
+
 		editText.setCursorVisible(true);
 		editText.setSingleLine(false);
 		editText.setOnClickListener(this);
@@ -57,6 +68,7 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 		if (isPasswordInputType(inputType)){
 			changeSafeDisplay(editText, false);
 		}
+		return this;
 	}
 
 	/**
@@ -204,14 +216,29 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 		}
 	};
 
+	/**
+	 * 随机键值标志位，默认false
+	 */
+	protected boolean shouldRandom = false;
+
+	/**
+	 * 是否生成随机键值
+	 * @param shouldRandom
+     */
+	public KeyboardHelper setShouldRandom(boolean shouldRandom) {
+		this.shouldRandom = shouldRandom;
+		return this;
+	}
+
 	public void showKeyboard(@NonNull EditText editText) {
 		keyboardView.setTag(TAG_ET, editText);
 
 		int visibility = keyboardLayout.getVisibility();
 		if (visibility == View.GONE || visibility == View.INVISIBLE) {
 			keyboardLayout.setVisibility(View.VISIBLE);
-//			randomdigkey();
 		}
+		if (shouldRandom)
+			randomdigkey();
 
 		if (editText.getWindowToken() != null) {
 			keyboardWindow.showAtLocation(editText.getRootView(), Gravity.BOTTOM, 0, 0);
@@ -279,6 +306,9 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 	}
 
 	protected static PopupWindow createKeyboardWindow(Context context){
+		if (keyboardWindow != null)
+			return keyboardWindow;
+
 		// 一个自定义的布局，作为显示的内容
 		View contentView = LayoutInflater.from(context).inflate(
 				R.layout.keyboard_layout, null);
