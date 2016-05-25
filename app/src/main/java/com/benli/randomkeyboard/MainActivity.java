@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.benli.keyboard.AllKeyboardHelper;
 import com.benli.keyboard.KeyboardHelper;
 
 public class MainActivity extends AppCompatActivity implements CommonUtils.OnDynamicCodeDialogClickListener {
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        keyboardHelper = new KeyboardHelper(this)
+        keyboardHelper = new AllKeyboardHelper(this)
                 .addEditText((EditText) findViewById(R.id.edittext1))
                 .addEditText((EditText) findViewById(R.id.edittext2))
                 .setShouldRandom(true);
