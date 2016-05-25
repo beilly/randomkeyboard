@@ -9,6 +9,7 @@ import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -33,30 +34,43 @@ import java.util.Random;
  */
 public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeListener, OnKeyboardActionListener {
     private final static int TAG_ET = R.id.keyboard_view;
-    private static PopupWindow keyboardWindow;
 
+    protected Keyboard keyMain;// 主键盘
+
+    private static PopupWindow keyboardWindow;
     private View keyboardLayout;
-    private KeyboardView keyboardView;
-    private Keyboard keyDig;// 数字键盘
+    protected KeyboardView keyboardView;
 
     public KeyboardHelper(Activity mActivity) {
         this(mActivity, null);
     }
 
     public KeyboardHelper(Activity mActivity, EditText editText) {
-        keyDig = new Keyboard(mActivity.getApplicationContext(), R.xml.keyboard_symbols);
         keyboardWindow = createKeyboardWindow(mActivity.getApplicationContext());
         keyboardView = (KeyboardView) keyboardWindow.getContentView().findViewById(R.id.keyboard_view);
         keyboardLayout = keyboardWindow.getContentView().findViewById(R.id.keyboard_view_layout);
-//		keyboardLayout = mActivity.findViewById(R.id.keyboard_view_layout);
-//		keyboardView = (KeyboardView) mActivity.findViewById(R.id.keyboard_view);
-        keyboardView.setKeyboard(keyDig);
-        keyboardView.setEnabled(true);
-        keyboardView.setPreviewEnabled(false);
-        keyboardView.setOnKeyboardActionListener(this);
+        initKeyboar(mActivity);
         addEditText(editText);
     }
 
+    /**
+     * 初始化键盘
+     * @param mActivity
+     * @return
+     */
+    protected void initKeyboar(Activity mActivity){
+        keyMain = new Keyboard(mActivity.getApplicationContext(), R.xml.keyboard_digs);
+        keyboardView.setKeyboard(keyMain);
+        keyboardView.setEnabled(true);
+        keyboardView.setPreviewEnabled(false);
+        keyboardView.setOnKeyboardActionListener(this);
+    }
+
+    /**
+     * 添加键盘布局
+     * @param editText
+     * @return
+     */
     public KeyboardHelper addEditText(EditText editText) {
         if (editText == null)
             return this;
@@ -80,12 +94,9 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
      * @return
      */
     public KeyboardHelper changeSafeDisplay(boolean showPwd) {
-        Object arg0 = keyboardView.getTag(TAG_ET);
-        if (arg0 == null || !(arg0 instanceof EditText)) {
-            return this;
-        }
+        EditText editText = getEditTextByTag();
+        if (editText == null) return this;
 
-        EditText editText = (EditText) arg0;
         return changeSafeDisplay(editText, showPwd);
     }
 
@@ -100,17 +111,10 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 
         if (showPwd) {
             // 显示密码
-            editText.setInputType(InputType.TYPE_CLASS_NUMBER);
             editText.setTransformationMethod(android.text.method.HideReturnsTransformationMethod.getInstance()); //数字
         } else {
-            // 隐藏密码    3.0版才开始支持
-            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); //字符
-            } else {
-                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-                //setTransformationMethod 则可以支持将输入的字符转换，包括清除换行符、转换为掩码
-                editText.setTransformationMethod(android.text.method.PasswordTransformationMethod.getInstance());
-            }
+            //setTransformationMethod 则可以支持将输入的字符转换，包括清除换行符、转换为掩码
+            editText.setTransformationMethod(android.text.method.PasswordTransformationMethod.getInstance());
         }
 
         return this;
@@ -198,12 +202,9 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
-        Object arg0 = keyboardView.getTag(TAG_ET);
-        if (arg0 == null || !(arg0 instanceof EditText)) {
-            return;
-        }
+        EditText editText = getEditTextByTag();
+        if (editText == null) return;
 
-        EditText editText = (EditText) arg0;
         Editable editable = editText.getText();
         int start = editText.getSelectionStart();
         if (primaryCode == Keyboard.KEYCODE_CANCEL) {// 完成
@@ -217,6 +218,15 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
         } else {
             editable.insert(start, Character.toString((char) primaryCode));
         }
+    }
+
+    @Nullable
+    protected EditText getEditTextByTag() {
+        Object arg0 = keyboardView.getTag(TAG_ET);
+        if (arg0 == null || !(arg0 instanceof EditText)) {
+            return null;
+        }
+        return (EditText) arg0;
     }
 
 
@@ -243,7 +253,7 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
             keyboardLayout.setVisibility(View.VISIBLE);
         }
         if (shouldRandom)
-            randomdigkey();
+            randomKey();
 
         if (editText.getWindowToken() != null) {
             Resources resources = editText.getContext().getApplicationContext().getResources();
@@ -263,7 +273,7 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
         }
     }
 
-    private boolean isNumber(String str) {
+    protected boolean isNumber(String str) {
         String wordstr = "0123456789";
         if (wordstr.indexOf(str) > -1) {
             return true;
@@ -271,7 +281,7 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
         return false;
     }
 
-    private boolean isword(String str) {
+    protected boolean isword(String str) {
         String wordstr = "abcdefghijklmnopqrstuvwxyz";
         if (wordstr.indexOf(str.toLowerCase()) > -1) {
             return true;
@@ -279,8 +289,8 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
         return false;
     }
 
-    private void randomdigkey() {
-        List<Key> keyList = keyDig.getKeys();
+    protected void randomKey() {
+        List<Key> keyList = keyMain.getKeys();
         // 查找出0-9的数字键
         List<Key> newkeyList = new ArrayList<Key>();
         for (int i = 0; i < keyList.size(); i++) {
@@ -311,7 +321,7 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
             newkeyList.get(i).label = resultList.get(i).getLable();
             newkeyList.get(i).codes[0] = resultList.get(i).getCode();
         }
-        keyboardView.setKeyboard(keyDig);
+        keyboardView.setKeyboard(keyMain);
     }
 
     protected static PopupWindow createKeyboardWindow(Context context) {

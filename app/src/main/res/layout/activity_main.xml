@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textview"
-        android:inputType="numberPassword"
+        android:inputType="textWebPassword"
         android:hint="Hello World!" />
 
     <EditText
@@ -28,6 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/edittext1"
+        android:inputType="textPassword"
         android:text="1234581" />
 
     <Button

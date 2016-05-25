@@ -23,13 +23,14 @@
      <color name="white_100t">#00ffffff</color>
      <color name="bg_orange_ff7e2a">#ff7e2a</color>
      <color name="transparent">#00000000</color>
+     <color name="gray_6c7280">#6c7280</color>
 
      <!-- 键盘 -->
      <color name="keyboard_text_color">@color/bg_orange_ff7e2a</color>
-     <color name="keyboard_key_btn_press">@color/white_50t</color>
+     <color name="keyboard_key_btn_press">@color/white_10t</color>
      <color name="keyboard_key_btn_normal">@color/white_0t</color>
      <color name="keyboard_xdja_text_color">#ffffffff</color>
-     <color name="keyboard_divide_color">#6c7280</color>
+     <color name="keyboard_divide_color">@color/gray_6c7280</color>
      <color name="keyboard_shadow_color">#553c3c3c</color>
-     <color name="keyboard_backgroud">@color/white_30t</color>
+     <color name="keyboard_backgroud">@color/gray_6c7280</color>
 </resources>
