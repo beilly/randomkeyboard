@@ -11,6 +11,28 @@
 
 4、建议使用源码的Module的方式引入，方便修改样式；
 
+### 使用方式
+
+1、导入Module；
+
+2、在对应的view初始化的时候加入以下代码：
+
+-	普通的Activity或者Fragment中使用
+```
+keyboardHelper = new KeyboardHelper(this)
+		.addEditText((EditText) findViewById(R.id.edittext1))
+		.addEditText((EditText) findViewById(R.id.edittext2))
+		.setShouldRandom(true);
+```
+
+
+-	Dialog中使用（当然这里是返回Dialog直接findView的方式，但是你只要通过addEditText设置都行）
+```
+Window window = alertDialog.getWindow();
+final EditText edtWithdrawCashDynamicCode = (EditText) window.findViewById(R.id.edt_withdraw_cash_dynamic_code);
+keyboardHelper.addEditText(edtWithdrawCashDynamicCode);
+```
+
 ###普通EditText
 <img src="png/device-2016-05-23-145650.png" width="360" height = "640"/> 
 
