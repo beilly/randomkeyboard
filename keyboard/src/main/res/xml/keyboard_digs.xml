@@ -39,15 +39,15 @@
     </Row>
     <Row>
         <Key
-            android:codes="-5"
-            android:isRepeatable="true"
-            android:keyIcon="@drawable/keyboard_delete" />
+            android:codes="-3"
+            android:keyEdgeFlags="right"
+            android:keyLabel="完成" />
         <Key
             android:codes="48"
             android:keyLabel="0" />
         <Key
-            android:codes="-3"
-            android:keyEdgeFlags="right"
-            android:keyLabel="完成" />
+            android:codes="-5"
+            android:isRepeatable="true"
+            android:keyIcon="@drawable/keyboard_delete" />
     </Row>
 </Keyboard>
