@@ -1,0 +1,6 @@
+{
+  "name": "Randomkeyboard",
+  "tagline": "基于PopWindow封装的自定义键盘，支持随机键值",
+  "body": "# randomkeyboard\r\n\r\n[![Release](https://jitpack.io/v/shibenli/randomkeyboard.svg)](https://jitpack.io/#shibenli/randomkeyboard)\r\n\r\n基于PopWindow封装的自定义键盘，支持随机键值\r\n\r\n### 主要有一下优点：\r\n\r\n1、纯数字的自定义键盘；\r\n\r\n2、使用助手类的方式，可以使用一个对象管理多个输入框；\r\n\r\n3、不依赖于页面布局，使用内部使用Popwindow的方式实现键盘弹出，更加模块化。\r\n\r\n4、建议使用源码的Module的方式引入，方便修改样式；\r\n\r\n### 使用方式\r\n\r\n1、导入Module；\r\n\r\n2、在对应的view初始化的时候加入以下代码：\r\n\r\n-\t普通的Activity或者Fragment中使用\r\n```\r\nkeyboardHelper = new KeyboardHelper(this)\r\n\t\t.addEditText((EditText) findViewById(R.id.edittext1))\r\n\t\t.addEditText((EditText) findViewById(R.id.edittext2))\r\n\t\t.setShouldRandom(true);\r\n```\r\n\r\n\r\n-\tDialog中使用（当然这里是返回Dialog直接findView的方式，但是你只要通过addEditText设置都行）\r\n```\r\nWindow window = alertDialog.getWindow();\r\nfinal EditText edtWithdrawCashDynamicCode = (EditText) window.findViewById(R.id.edt_withdraw_cash_dynamic_code);\r\nkeyboardHelper.addEditText(edtWithdrawCashDynamicCode);\r\n```\r\n\r\n###普通EditText\r\n<img src=\"png/1.png\" width=\"360\" height = \"640\"/> \r\n\r\n###包含EditText的Dialog\r\n<img src=\"png/2.png\" width=\"360\" height = \"640\"/> \r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
