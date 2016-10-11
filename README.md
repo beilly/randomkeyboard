@@ -37,7 +37,7 @@ keyboardHelper.addEditText(edtWithdrawCashDynamicCode);
 ```
 
 ###普通EditText
-<img src="png/device-2016-05-23-145650.png" width="360" height = "640"/> 
+<img src="png/1.png" width="360" height = "640"/> 
 
 ###包含EditText的Dialog
-<img src="png/device-2016-05-23-172741.png" width="360" height = "640"/> 
+<img src="png/2.png" width="360" height = "640"/> 
