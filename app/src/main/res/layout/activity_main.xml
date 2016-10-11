@@ -21,6 +21,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textview"
         android:inputType="textWebPassword"
+        android:gravity="center"
+        android:foregroundGravity="center"
+        android:textCursorDrawable="@drawable/color_cursor"
         android:hint="Hello World!" />
 
     <EditText
