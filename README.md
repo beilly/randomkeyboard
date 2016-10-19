@@ -36,6 +36,10 @@ final EditText edtWithdrawCashDynamicCode = (EditText) window.findViewById(R.id.
 keyboardHelper.addEditText(edtWithdrawCashDynamicCode);
 ```
 
+### 已知问题 
+
+1、Popwindow上的EditText无法使用（由于输入法界面是使用Popwindow实现，Popwindow嵌套使用的时候不能从EditText导致冲突，暂时考虑使用Dialog实现一个单独处理Popwindow [**doing**]；
+
 ###普通EditText
 <img src="png/1.png" width="360" height = "640"/> 
 
