@@ -35,9 +35,20 @@
         android:text="1234581" />
 
     <Button
+        android:id="@+id/btn1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/edittext2"
         android:text="@string/common_sure"
         android:onClick="onClick"/>
+
+    <Button
+        android:id="@+id/btn2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn1"
+        android:text="@string/common_pop"
+        android:visibility="gone"
+        android:onClick="onPopwindowClick"/>
+
 </RelativeLayout>

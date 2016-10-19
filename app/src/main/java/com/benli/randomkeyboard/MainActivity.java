@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
 
     private KeyboardHelper keyboardHelper;
     private AlertDialog alertDialog;
+    private PopupWindow popupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,14 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
         keyboardHelper.addEditText(edtWithdrawCashDynamicCode);
     }
 
+    public void onPopwindowClick(View v){
+        popupWindow = CommonUtils.showDynamicCodeWindow(this, "提示信息", "请输入", false, true, -1, this, v);
+
+        View window = popupWindow.getContentView();
+        final EditText edtWithdrawCashDynamicCode = (EditText) window.findViewById(R.id.edt_withdraw_cash_dynamic_code);
+        keyboardHelper.addEditText(edtWithdrawCashDynamicCode);
+    }
+
     @Override
     public void onGetCode(Button view, EditText editText) {
 
@@ -43,7 +53,13 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
 
     @Override
     public void onCancel(TextView view, EditText editText) {
-        alertDialog.dismiss();
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        }
+
+        if (popupWindow != null) {
+            popupWindow.dismiss();
+        }
     }
 
     @Override

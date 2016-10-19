@@ -2,6 +2,7 @@ package com.benli.keyboard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -11,6 +12,7 @@ import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.os.Build;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -38,7 +40,7 @@ import java.util.Random;
 /**
  * 键盘助手类
  */
-public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeListener, OnKeyboardActionListener {
+public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeListener, OnKeyboardActionListener, PopupWindow.OnDismissListener {
     private final static int TAG_ET = R.id.keyboard_view;
 
     protected Keyboard keyMain;// 主键盘
@@ -53,6 +55,7 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 
     public KeyboardHelper(Activity mActivity, EditText editText) {
         keyboardWindow = createKeyboardWindow(mActivity.getApplicationContext());
+        keyboardWindow.setOnDismissListener(this);
         keyboardView = (KeyboardView) keyboardWindow.getContentView().findViewById(R.id.keyboard_view);
         keyboardLayout = keyboardWindow.getContentView().findViewById(R.id.keyboard_view_layout);
         initKeyboar(mActivity);
@@ -61,10 +64,11 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 
     /**
      * 初始化键盘
+     *
      * @param mActivity
      * @return
      */
-    protected void initKeyboar(Activity mActivity){
+    protected void initKeyboar(Activity mActivity) {
         keyMain = new Keyboard(mActivity.getApplicationContext(), R.xml.keyboard_digs);
         keyboardView.setKeyboard(keyMain);
         keyboardView.setEnabled(true);
@@ -74,6 +78,7 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 
     /**
      * 添加键盘布局
+     *
      * @param editText
      * @return
      */
@@ -213,12 +218,14 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
 
         Editable editable = editText.getText();
         int start = editText.getSelectionStart();
+        int end = editText.getSelectionEnd();
         if (primaryCode == Keyboard.KEYCODE_CANCEL) {// 完成
             hideKeyboard(editText);
         } else if (primaryCode == Keyboard.KEYCODE_DELETE) {// 回退
+            start = start == end ? start - 1 : start;
             if (!TextUtils.isEmpty(editable)) {
-                if (start > 0) {
-                    editable.delete(start - 1, start);
+                if (start >= 0 && end <= editable.length()) {
+                    editable.delete(start, end);
                 }
             }
         } else {
@@ -252,6 +259,13 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
     }
 
     public void showKeyboard(@NonNull EditText editText) {
+        EditText tag = getEditTextByTag();
+        if (editText == tag) {//当前输入框已经显示键盘
+            return;
+        } else {//不同的输入框，就先隐藏键盘
+            hideKeyboard(tag);
+        }
+
         keyboardView.setTag(TAG_ET, editText);
 
         int visibility = keyboardLayout.getVisibility();
@@ -261,19 +275,41 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
         if (shouldRandom)
             randomKey();
 
-        if (editText.getWindowToken() != null) {
+        IBinder windowToken = editText.getWindowToken();
+        if (windowToken != null && windowToken.isBinderAlive()) {
             Rect rect = new Rect();
             editText.getRootView().getGlobalVisibleRect(rect);
-            Resources resources = editText.getContext().getApplicationContext().getResources();
+            Context editTextContext = editText.getContext();
+            Resources resources = editTextContext.getApplicationContext().getResources();
             DisplayMetrics dm = resources.getDisplayMetrics();
-            int width3 = dm.widthPixels;
-            int height3 = dm.heightPixels - rect.bottom;
-            keyboardWindow.showAtLocation(editText, Gravity.BOTTOM | Gravity.LEFT, 0, -height3);
+            int y = rect.bottom - dm.heightPixels;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                boolean isActivity = needAttachedInDecor(editText);
+                keyboardWindow.setAttachedInDecor(isActivity);
+            }
+
+            keyboardWindow.setTouchable(true);
+            keyboardWindow.showAtLocation(editText, Gravity.BOTTOM | Gravity.LEFT, 0, y);
+            keyboardWindow.update(keyboardWindow.getWidth(), keyboardWindow.getHeight());
+        }
+    }
+
+    /**
+     * 是否需要附属view对应的window
+     * @param view
+     * @return
+     */
+    protected boolean needAttachedInDecor(View view) {
+        Context viewContext = view.getContext();
+        if (viewContext instanceof ContextWrapper) {//当view在Activity
+            Context baseContext = ((ContextWrapper) viewContext).getBaseContext();
+            return baseContext instanceof Activity;
+        }else{//默认不附属
+            return false;
         }
     }
 
     public void hideKeyboard(EditText editText) {
-        keyboardView.setTag(TAG_ET, null);
         int visibility = keyboardLayout.getVisibility();
         if (visibility == View.VISIBLE || visibility == View.INVISIBLE) {
 //			keyboardLayout.setVisibility(View.GONE);
@@ -348,10 +384,7 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
         PopupWindow popupWindow = new PopupWindow(contentView,
                 height3, ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
-        popupWindow.setTouchable(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            popupWindow.setAttachedInDecor(false);
-        }
+        popupWindow.setFocusable(false);
 
         // 如果不设置PopupWindow的背景，无论是点击外部区域还是Back键都无法dismiss弹框
         // 我觉得这里是API的一个bug
@@ -418,5 +451,10 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
         }
 
         return size;
+    }
+
+    @Override
+    public void onDismiss() {
+        keyboardView.setTag(TAG_ET, null);
     }
 }
