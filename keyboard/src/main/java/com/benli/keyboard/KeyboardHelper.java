@@ -268,7 +268,7 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
             DisplayMetrics dm = resources.getDisplayMetrics();
             int width3 = dm.widthPixels;
             int height3 = dm.heightPixels - rect.bottom;
-            keyboardWindow.showAtLocation(editText, Gravity.BOTTOM, 0, -height3);
+            keyboardWindow.showAtLocation(editText, Gravity.BOTTOM | Gravity.LEFT, 0, -height3);
         }
     }
 
@@ -349,17 +349,9 @@ public class KeyboardHelper implements View.OnClickListener, View.OnFocusChangeL
                 height3, ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
         popupWindow.setTouchable(true);
-//
-//		popupWindow.setTouchInterceptor(new View.OnTouchListener() {
-//
-//			@Override
-//			public boolean onTouch(View v, MotionEvent event) {
-//
-//				return false;
-//				// 这里如果返回true的话，touch事件将被拦截
-//				// 拦截后 PopupWindow的onTouchEvent不被调用，这样点击外部区域无法dismiss
-//			}
-//		});
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            popupWindow.setAttachedInDecor(false);
+        }
 
         // 如果不设置PopupWindow的背景，无论是点击外部区域还是Back键都无法dismiss弹框
         // 我觉得这里是API的一个bug
