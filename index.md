@@ -36,8 +36,10 @@ final EditText edtWithdrawCashDynamicCode = (EditText) window.findViewById(R.id.
 keyboardHelper.addEditText(edtWithdrawCashDynamicCode);
 ```
 
-###普通EditText
+### 普通EditText
+
 <img src="png/1.png" width="360" height = "640"/> 
 
-###包含EditText的Dialog
+### 包含EditText的Dialog
+
 <img src="png/2.png" width="360" height = "640"/> 
