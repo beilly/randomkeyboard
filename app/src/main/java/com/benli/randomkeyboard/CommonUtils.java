@@ -3,7 +3,7 @@ package com.benli.randomkeyboard;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;

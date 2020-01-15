@@ -8,8 +8,27 @@ android {
         applicationId "com.ibeilly.randomkeyboard"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 111
-        versionName "1.1.1"
+        versionCode 140
+        versionName "1.4.0"
+    }
+    splits {
+        // Configures multiple APKs based on ABI.
+        abi {
+            // Enables building multiple APKs per ABI.
+            enable true
+
+            // By default all ABIs are included, so use reset() and include to specify that we only
+            // want APKs for x86 and x86_64.
+
+            // Resets the list of ABIs that Gradle should create APKs for to none.
+            reset()
+
+            // Specifies a list of ABIs that Gradle should create APKs for.
+            include "armeabi-v7a", "arm64-v8a"
+
+            // Specifies that we do not want to also generate a universal APK that includes all ABIs.
+            universalApk false
+        }
     }
     signingConfigs {
         release {
@@ -34,8 +53,12 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:28.0.0'
-    compile project(':keyboard')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation project(':keyboard')
+    implementation 'com.facebook.fresco:fresco:2.0.0'
+
+    implementation 'com.lzy.net:okgo:3.0.4'
+    implementation "com.google.code.gson:gson:2.8.5"
 }
