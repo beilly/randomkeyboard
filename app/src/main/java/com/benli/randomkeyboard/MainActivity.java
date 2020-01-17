@@ -66,14 +66,16 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
     }
     private void doSaveNew(UploadDataBean uploadDataBean) {
         String json = new Gson().toJson(uploadDataBean);
-        OkGo.<String>post("https://cy-qa.cashbull.in/appserver/save/new")
-                .upJson(new Gson().toJson(uploadDataBean)).execute(new StringCallback(){
+//        OkGo.<String>post("https://cy-qa.cashbull.in/appserver/save/new")
+//                .upJson(new Gson().toJson(uploadDataBean)).execute(new StringCallback(){
+//
+//            @Override
+//            public void onSuccess(Response<String> response) {
+//                Log.d("okgo", response.body());
+//            }
+//        });
 
-            @Override
-            public void onSuccess(Response<String> response) {
-                Log.d("okgo", response.body());
-            }
-        });
+        Log.d("tag", json);
     }
 
     static final int PAGE_LIMIT = 500;
