@@ -8,8 +8,8 @@ android {
         applicationId "com.ibeilly.randomkeyboard"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 141
-        versionName "1.4.1"
+        versionCode 142
+        versionName "1.4.2"
     }
     splits {
         // Configures multiple APKs based on ABI.
@@ -58,7 +58,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation project(':keyboard')
     implementation 'com.facebook.fresco:fresco:2.0.0'
+    implementation 'com.blankj:utilcodex:1.26.0'
 
     implementation 'com.lzy.net:okgo:3.0.4'
-    implementation "com.google.code.gson:gson:2.8.5"
+    implementation "com.google.code.gson:gson:2.8.6"
 }

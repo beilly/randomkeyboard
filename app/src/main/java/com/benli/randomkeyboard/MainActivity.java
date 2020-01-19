@@ -3,7 +3,6 @@ package com.benli.randomkeyboard;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -20,6 +19,10 @@ import com.benli.keyboard.KeyboardHelper;
 import com.benli.randomkeyboard.app.AppInfoBean;
 import com.benli.randomkeyboard.app.AppUtils;
 import com.benli.randomkeyboard.app.UploadDataBean;
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.EncryptUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
@@ -29,6 +32,12 @@ import com.lzy.okgo.model.Response;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CommonUtils.OnDynamicCodeDialogClickListener {
+
+
+    private String keyDES       = "6801020304050607";
+    private String resDES       = "1F7962581118F360";
+    private byte[] bytesKeyDES  = ConvertUtils.hexString2Bytes(keyDES);
+    private byte[] bytesResDES  = ConvertUtils.hexString2Bytes(resDES);
 
     private KeyboardHelper keyboardHelper;
     private AlertDialog alertDialog;
@@ -52,30 +61,40 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
     private void doCollectAppInfo(UploadDataBean uploadDataBean) {
         String data = new Gson().toJson(uploadDataBean.data);
         UploadDataBean<String> bean = new UploadDataBean<>();
-        bean.data = Base64.encodeToString(data.getBytes(), Base64.DEFAULT);
-        bean.dataID = uploadDataBean.dataID ;
-        bean.endTime = uploadDataBean.endTime ;
-        bean.node = uploadDataBean.node ;
-        bean.order = uploadDataBean.order ;
-        bean.orderLength = uploadDataBean.orderLength ;
-        bean.startTime = uploadDataBean.startTime ;
-        bean.pageCount = uploadDataBean.pageCount ;
-        bean.total = uploadDataBean.total ;
-        bean.type = uploadDataBean.type ;
+        bean.data = EncryptUtils.encrypt3DES2HexString(data.getBytes(), bytesKeyDES, "DES/ECB/NoPadding", null );
+        bean.dataID = uploadDataBean.dataID;
+        bean.endTime = uploadDataBean.endTime;
+        bean.node = uploadDataBean.node;
+        bean.order = uploadDataBean.order;
+        bean.orderLength = uploadDataBean.orderLength;
+        bean.startTime = uploadDataBean.startTime;
+        bean.pageCount = uploadDataBean.pageCount;
+        bean.total = uploadDataBean.total;
+        bean.type = uploadDataBean.type;
         doSaveNew(bean);
     }
-    private void doSaveNew(UploadDataBean uploadDataBean) {
-        String json = new Gson().toJson(uploadDataBean);
-//        OkGo.<String>post("https://cy-qa.cashbull.in/appserver/save/new")
-//                .upJson(new Gson().toJson(uploadDataBean)).execute(new StringCallback(){
-//
-//            @Override
-//            public void onSuccess(Response<String> response) {
-//                Log.d("okgo", response.body());
-//            }
-//        });
 
+    private void doSaveNew(UploadDataBean uploadDataBean) {
+        doHttp();
+        String json = new Gson().toJson(uploadDataBean);
+
+        SPStaticUtils.put("appData", json);
         Log.d("tag", json);
+    }
+
+    private void doHttp() {
+        String json = SPStaticUtils.getString("appData");
+        if (!StringUtils.isEmpty(json)) {
+            UploadDataBean uploadDataBean = new Gson().fromJson(json, UploadDataBean.class);
+            OkGo.<String>post("https://cy-qa.cashbull.in/appserver/save/new")
+                    .upJson(new Gson().toJson(uploadDataBean)).execute(new StringCallback() {
+
+                @Override
+                public void onSuccess(Response<String> response) {
+                    Log.d("okgo", response.body());
+                }
+            });
+        }
     }
 
     static final int PAGE_LIMIT = 500;
@@ -96,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
         uploadDataBean.orderLength = remainder > 0 ? page + 1 : page;
         uploadDataBean.total = appInfoBeanList.size();
 
-        for (int i = 0; i < page; i ++) {
+        for (int i = 0; i < page; i++) {
 
             UploadDataBean<List<AppInfoBean>> realUploadDataBean = uploadDataBean;
 
