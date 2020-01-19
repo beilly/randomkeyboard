@@ -8,8 +8,8 @@ android {
         applicationId "com.ibeilly.randomkeyboard"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 142
-        versionName "1.4.2"
+        versionCode 143
+        versionName "1.4.3"
     }
     splits {
         // Configures multiple APKs based on ABI.
