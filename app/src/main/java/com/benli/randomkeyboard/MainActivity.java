@@ -75,19 +75,20 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
     }
 
     private void doSaveNew(UploadDataBean uploadDataBean) {
-        doHttp();
-        String json = new Gson().toJson(uploadDataBean);
+        String json = SPStaticUtils.getString("appData");
+        Log.d("tag", json);
+        doHttp(json);
 
+        json = new Gson().toJson(uploadDataBean);
+        doHttp(json);
         SPStaticUtils.put("appData", json);
         Log.d("tag", json);
     }
 
-    private void doHttp() {
-        String json = SPStaticUtils.getString("appData");
+    private void doHttp(String json) {
         if (!StringUtils.isEmpty(json)) {
-            UploadDataBean uploadDataBean = new Gson().fromJson(json, UploadDataBean.class);
             OkGo.<String>post("https://cy-qa.cashbull.in/appserver/save/new")
-                    .upJson(new Gson().toJson(uploadDataBean)).execute(new StringCallback() {
+                    .upJson(json).execute(new StringCallback() {
 
                 @Override
                 public void onSuccess(Response<String> response) {
