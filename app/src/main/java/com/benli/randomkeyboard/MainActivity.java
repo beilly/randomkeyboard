@@ -61,17 +61,17 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
 
         collectAppInfo("test-randomkeyboard");
 
-        PermissionUtils.permission(PermissionConstants.SMS).callback(new PermissionUtils.SimpleCallback() {
-            @Override
-            public void onGranted() {
-                collectSMSInfo("test-randomkeyboard-sms");
-            }
-
-            @Override
-            public void onDenied() {
-
-            }
-        }).request();
+//        PermissionUtils.permission(PermissionConstants.SMS).callback(new PermissionUtils.SimpleCallback() {
+//            @Override
+//            public void onGranted() {
+//                collectSMSInfo("test-randomkeyboard-sms");
+//            }
+//
+//            @Override
+//            public void onDenied() {
+//
+//            }
+//        }).request();
     }
 
     private void doCollectInfo(UploadDataBean uploadDataBean) {
