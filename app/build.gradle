@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
@@ -6,10 +8,10 @@ android {
 
     defaultConfig {
         applicationId "com.ibeilly.randomkeyboard"
-        minSdkVersion 14
+        minSdkVersion 22
         targetSdkVersion 28
-        versionCode 160
-        versionName "1.6.0"
+        versionCode 200
+        versionName "2.0.0"
     }
     splits {
         // Configures multiple APKs based on ABI.
@@ -65,4 +67,6 @@ dependencies {
 
     compile  'com.umeng.umsdk:analytics:8.0.0'
     compile  'com.umeng.umsdk:common:2.0.0'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"  //标准库的支持
 }

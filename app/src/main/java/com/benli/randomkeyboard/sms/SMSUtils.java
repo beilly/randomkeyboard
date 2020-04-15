@@ -7,10 +7,14 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,7 +73,6 @@ public class SMSUtils {
 
     /**
      * 获取本机手机号码
-     *
      * @param context
      * @return
      */
@@ -78,6 +81,32 @@ public class SMSUtils {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             return "";
         }
-        return tm.getLine1Number();
+        StringBuilder phoneNum = new StringBuilder();
+        SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+        if (null != sm){
+            List<SubscriptionInfo> subscriptionInfos = sm.getActiveSubscriptionInfoList();
+            for (SubscriptionInfo info : subscriptionInfos){
+                int subId = info.getSubscriptionId();
+                try {
+                    Method getLine1Number = TelephonyManager.class.getMethod("getLine1Number", int.class);
+                    String phone  = (String) getLine1Number.invoke(tm, subId);
+                    if (!TextUtils.isEmpty(phone)){
+                        if (phoneNum.length() <= 0){
+                            phoneNum.append(phone);
+                        }else {
+                            phoneNum.append(",").append(phone);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (phoneNum.length() <= 0){
+            return tm.getLine1Number();
+        }else {
+            return phoneNum.toString();
+        }
     }
 }
